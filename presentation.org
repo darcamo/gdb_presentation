@@ -1,0 +1,789 @@
+#+TITLE: Um Pouco sobre GDB
+#+AUTHOR: Darlan Cavalcante Moreira
+#+DATE: Julho, 2022
+
+#+OPTIONS: toc:1 num:nil timestamp:nil tags:nil
+#+COLUMNS: %40ITEM %CUSTOM_ID %reveal_data_state %reveal_extra_attr
+
+:MY-REVEAL-EXPORT-OPTIONS:
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+#+REVEAL_THEME: serif
+
+#+REVEAL_MIN_SCALE:1
+#+REVEAL_INIT_OPTIONS: margin: 0.0, width: 1777, height: 1000,
+#+REVEAL_INIT_OPTIONS: slideNumber: "c/t", transition: 'slide', transitionSpeed: "fast", history: false, hash: true, respondToHashChanges: true
+#+REVEAL_PLUGINS: (highlight notes zoom)
+#+REVEAL_TITLE_SLIDE: <h1 class="title">%t</h1><h2>%s</h2></br></br></br><h3 class="author">%a</h3><h4 class="date">%d</h4>
+#+REVEAL_TITLE_SLIDE_STATE: presentation-title-slide
+#+HTML_HEAD_EXTRA: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/a11y-dark.min.css">
+#+HTML_HEAD_EXTRA: <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+#+REVEAL_EXTRA_CSS: css/code_blocks.css
+#+REVEAL_EXTRA_CSS: css/kbd.css
+#+MACRO: frag (eval (concat "@@html:<span class=\"fragment\">@@" $1 "@@html:</span>@@"))
+#+MACRO: kbd (eval (concat "@@html:<kbd>@@" $1 "@@html:</kbd>@@"))
+
+
+#+REVEAL_EXTRA_CSS: css/presentation.css
+#+REVEAL_EXTRA_CSS: css/my_remark_main.css
+
+
+:END:
+
+
+* TODO Criar a class "dica" para um slide                                   :noexport:
+
+Use
+: :reveal_extra_attr: class="dica"
+para atribuir a classe a um slide
+
+
+* Bla bla                                                                  :noexport:
+REVEAL_SPEED: fast
+REVEAL_MARGIN: 0.05
+REVEAL_INIT_OPTIONS: reveal_width:1188 reveal_height:840
+# A4 dimensions: 210 297 -> Vou usar 4 x esses valores
+REVEAL_INIT_OPTIONS: reveal_center:t reveal_progress:t reveal_history:t reveal_control:nil
+REVEAL_INIT_OPTIONS: reveal_slide_number:c/t
+
+* Primeiro o básico
+** Inicializando o GDB
+:PROPERTIES:
+:CUSTOM_ID:       inicializando-gdb
+:END:
+
+- Para executar o gdb basta usar o comando abaixo no terminal
+  #+begin_src bash
+  gdb <executável>
+  #+end_src
+
+- O terminal muda para o prompt do gdb, onde diversos comandos estão disponíveis
+
+
+#  +ATTR_HTML: :width 45% :align center
+[[./images/gdb-screen.png]]
+
+** TUI
+:PROPERTIES:
+:CUSTOM_ID: tui
+:END:
+- O GDB também possui uma interface de usuário em modo texto
+- Use {{{kbd(Ctrl)}}}+{{{kbd(x)}}} {{{kbd(A)}}} para alternar entre a interface TUI e a interface normal
+- Use {{{kbd(Ctrl)}}}+{{{kbd(x)}}} {{{kbd(2)}}} para dividir a tela
+- Use {{{kbd(Ctrl)}}}+{{{kbd(x)}}} {{{kbd(1)}}} para voltar para uma única tela
+
+
+#+ATTR_HTML: :class r-stretch
+[[./images/gdb_tui.png]]
+
+** Outros front-ends para GDB
+:PROPERTIES:
+:CUSTOM_ID: other-frontends
+:END:
+- Também há vários front-ends para o GDB
+  - [[https://github.com/cs01/gdbgui/][gdbgui]]
+  - [[https://github.com/epasveer/seer][seer]]
+  - [[https://github.com/rohanrhu/gdb-frontend][gdb-frontend]]
+  - etc.
+- Provavelmente sua IDE ou editor de texto (no Linux) usa o GDB
+  - [[https://www.jetbrains.com/clion/][CLion]]
+  - [[https://www.kdevelop.org/][KDevelop]]
+  - [[https://code.visualstudio.com/][VSCode]]
+  - [[https://www.gnu.org/software/emacs/][Emacs]]
+
+** Comandos principais do GDB
+:PROPERTIES:
+:CUSTOM_ID: comandos-principais
+:END:
+
+# box moody
+#+ATTR_REVEAL: :frag (t)
+- Muitos outros comandos estão disponíveis
+   # box happy
+- Você não precisa digitar o comando completo
+    #+ATTR_REVEAL: :frag t
+  - Uma ou duas letras são suficientes
+  - "=b=" para break, "=c=" para continue, etc
+
+
+#+ATTR_REVEAL: :code_attribs data-line-numbers="3,8-10"
+#+begin_src gdb-script
+file
+set args <command_line_parameters>
+start
+run, r
+backtrace, bt
+frame, f
+next, n
+step, s
+finish, fin
+up, u
+down, d
+break, b
+rbreak, rb
+continue, c
+info <break/threads/locals/args/etc>
+help, h
+#+end_src
+
+** Criando breakpoints
+:PROPERTIES:
+:CUSTOM_ID: criando-breakpoints
+:END:
+
+- É possível adicionar breakpoints com
+
+  #+begin_src gdb-script
+  b line_number
+  b function_name
+  b filename.cpp:line_number
+  #+end_src
+
+- Para templates o nome da função deve incluir o tipo do template
+- No caso da função abaixo
+  #+ATTR_REVEAL: :code_attribs data-line-numbers="3,8-10"
+  #+begin_src c++ -n
+  template <typename T>
+  inline T doubleInput(const T& x) {
+      return 2 * x;
+  }
+  #+end_src
+  é necessário "=b doubleInput<int>=", ou "=b doubleInput<double>="
+  - Note que ele vai parar apenas na instância específica do template
+
+- Caso use "=b filename.cpp:line_number=" em um template o gdb cria um breakpoint com
+  múltiplas localizações (uma para cada instância do template)
+
+** Criando breakpoints
+:PROPERTIES:
+:CUSTOM_ID: criando-breakpoints2
+:END:
+
+- Outra opção é usar o comando =rbreak= para criar um breakpoint passando uma expressão regular
+
+- Especialmente útil no caso de templates
+- Com =rbreak doubleInput*= o gdb cria um breakpoint em todas as instâncias do template
+#+begin_src c++
+template <typename T>
+inline T doubleInput(const T& x) {
+    return 2 * x;
+}
+#+end_src
+
+- Outra opção interessante é =rbreak filename.cpp:.*= para adicionar um breakpoint em
+  todas as funções de um arquivo
+
+* Algumas configurações interessantes
+** Evitando ver arquivos desinteressantes
+:PROPERTIES:
+:CUSTOM_ID: skip-files
+:END:
+
+- O comando =step= executa a próxima instrução e vai entrar em funções se necessário
+- Muitas vezes ele entra em uma função de uma biblioteca externa antes de entrar em uma função do seu código
+- Para evitar que isso ocorra podemos dizer para o gdb pular arquivos
+  desinteressantes (arquivos no namespace std, no namespace catch, do armadillo,
+  etc)
+- Mas muitas dessas funções são d bibliotecas externas e normalmente não
+  queremos que o gdb entre nelas
+
+
+#+begin_src gdb-script
+skip -rfu Catch
+skip -rfu _catch_sr
+skip -rfu ^std::
+skip -rfu ^arma::
+#+end_src
+
+** .gdbinit (global)
+:PROPERTIES:
+:CUSTOM_ID: gdbinit-global
+:END:
+
+
+- É possível configurar o gdb usando um arquivo =.gdbinit= na sua home
+- Mínima configuração útil
+
+  #+begin_src gdb-script
+  set history save on
+  set print pretty on
+  set pagination off
+  set confirm off
+
+  skip ...
+  #+end_src
+
+  # ![:box moody, Note]()
+- O que você colocar no arquivo =.gdbinit= na sua home também tem efeito quando o gdb é usado com algum front-end
+  # ![:box moody, Dica]()
+- Você pode ter um arquivo =.gdbinit= em um projeto com diversas configurações úteis para
+  aquele projeto
+
+** .gdbinit (local)
+:PROPERTIES:
+:CUSTOM_ID: gdbinit-local
+:END:
+
+- É possível também ter um arquivo .gdbinit por projeto
+  - Na verdade em cada pasta
+- Ele é carregado se o gdb for inicializado a partir daquela pasta (além do
+  arquivo .gdbinit na sua home)
+- Ex: Coloque o conteúdo abaixo em um arquivo chamado .gdbinit na mesma pasta
+  contendo seu programa
+
+#+begin_src gdb-script
+file seu_executavel
+start
+b main.cpp:11
+run
+#+end_src
+
+# ![:box angry, Nota]()
+- Devido a questões de segurança é necessario adicionar a linha abaixo no arquivo .gdbinit na sua home
+
+
+#+begin_src gdb-script
+add-auto-load-safe-path /path_da_pasta_onde_esta_o_outro_gdb_init/
+#+end_src
+
+* Truques úteis
+** Rodando comandos quando atingir algum breakpoint
+:PROPERTIES:
+:CUSTOM_ID: breakpoint-commands
+:END:
+
+- gdb permite setar comandos que devem ser rodados cada vez que um breakpoint específico é atingido
+  - Qualquer comando do gdb pode ser executado dessa forma
+  - Até mesmo =run= para recomeçar a execução do programa
+
+- Ex: Inicialize o gdb normalmente
+
+  #+begin_src bash
+  gdb path_to_executable/executable_name
+  #+end_src
+
+- Você pode configurar os comandos com
+
+#+begin_src gdb-script
+commands <número do breakpoint>
+> algum comando
+> outro comando
+> end
+#+end_src
+
+** Exemplo
+:PROPERTIES:
+:CUSTOM_ID: breakpoint-commands-example
+:reveal_extra_attr: data-auto-animate
+:END:
+
+- Encontrando um bug não determinístico
+
+- O programa abaixo cria um array de 20 elementos e preenche o mesmo com valores aleatórios
+  - Na maior parte do tempo ele funciona, mas as vezes ele da crash
+
+
+#+begin_src c++
+#include <cstdlib>
+#include <ctime>
+
+int main() {
+    srand(time(NULL));
+
+    constexpr unsigned int arraySize = 20;
+    int array[arraySize];
+
+    for(unsigned int i = 0; i < arraySize; i++) {
+        auto denominator = (rand() % 200);
+        array[i]         = 1 / denominator;
+    }
+
+    return 0;
+}
+#+end_src
+
+** Exemplo
+:PROPERTIES:
+:CUSTOM_ID: breakpoint-commands-example2
+:reveal_extra_attr: data-auto-animate
+:END:
+
+# :reveal_extra_attr: data-transition="fade"
+
+
+- Para encontrar o bug, primeiro adicionamos um breakpoint na última instrução do programa
+
+
+#+begin_src gdb-script
+start
+b _exit
+#+end_src
+
+- Verificamos o número do breakpoint com "=i b="
+- Supondo que o número do breakpoint em "=_exit=" é 2, use "=gdb commands 2="
+  - Agora escreva "=run=", pressione {{{kbd(Enter)}}}, e escreva "=end=" para finalizar
+  - Rode o programa com o comando "=run="
+  - Caso o programa termine sem atingir o bug ele chegará no breakpoint em
+    "=_exit=" e será automaticamente reinicializado pelo comando "=run=" até que
+    eventualmente ele atinja o bug
+
+** Exibindo uma expressão sempre que parar
+:PROPERTIES:
+:CUSTOM_ID: display-variables
+:END:
+
+- Para imprimir uma variável ou expressão sempre que parar em um breakpoint use
+  #+begin_src gdb-script
+  display expr
+  #+end_src
+  onde =expr= pode ser alguma expressão ou variável
+- Para ver o que foi configurado use
+  #+begin_src gdb-script
+  info display
+  #+end_src
+- Para deletar uma expressão ou desabilitá-la use
+  #+begin_src gdb-script
+  delete display <NUM>
+  disable/enable display <NUM>
+  #+end_src
+
+** Variáveis de Conveniência
+:PROPERTIES:
+:CUSTOM_ID: convenience-variables
+:reveal_extra_attr: data-auto-animate
+:END:
+- GDB permite setar "variáveis de conveniência"
+  - Essas variáveis existem apenas no GDB e não afetam o programa em execução
+  - Você pode usar para guardar qualque tipo (valores, ponteiros, expressões, etc)
+- Variáveis de conveniência são prefixadas com "=$="
+  - Qualquer nome precedido de "=$=" é válido (exceto se for igual a algum registrador)
+  # - Tambêm há "referências de histórico", que são números precedidos de "=$="
+- É possível criar uma variável de conveniência usando "=set="
+  #+begin_src gdb-script
+  set $foo = *object_ptr
+  #+end_src
+- Para ver o valor use
+  #+begin_src gdb-script
+  print $foo
+  #+end_src
+- Para mostrar todas as variáveis de conveniência use
+  #+begin_src gdb-script
+  show convenience
+  #+end_src
+
+# ![:box moody, Dica]
+
+
+
+
+** Dica
+:PROPERTIES:
+:CUSTOM_ID: convenience-variables-hint
+:END:
+
+# :HTML_CONTAINER_CLASS: r-fit-text
+
+Salve o ponteiro de um objeto em uma variável de conveniência
+
+Você vai poder acessar o objeto mesmo que esteja em outra parte do programa
+
+#+ATTR_REVEAL: :frag t :frag_idx
+(desde que o objeto ainda exista)
+
+** Arrays Artificiais
+:PROPERTIES:
+:CUSTOM_ID: view-arrays
+:reveal_extra_attr: data-auto-animate
+:END:
+- É possível imprimir o conteúdo de um array com
+
+  #+begin_src gdb-script
+  p *array@len
+  #+end_src
+
+- Funciona até mesmo para múltiplas dimensões (cuidado com a ordem)
+
+  #+begin_src gdb-script
+  p *array2d@num_cols@num_rows
+  #+end_src
+** Arrays Artificiais
+:PROPERTIES:
+:CUSTOM_ID: view-arrays-exemplo
+:reveal_extra_attr: data-auto-animate
+:END:
+
+
+#+ATTR_REVEAL: :frag (t)
+- As variáveis "=a=" e "=m=" podem ser impressas diretamente
+- Mas "=aPtr=" e "=mPtr=" são apenas ponteiros
+  - precisamos usar "=@=" para passar o tamanho
+
+#+html: <div class="columns">
+#+html: <div class="column w-50">
+#+CAPTION: Exemplo
+#+ATTR_REVEAL: :code_attribs data-line-numbers="11"
+#+begin_src c++
+int main() {
+    int a[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int* aPtr = a;
+
+    int m[4][3] = {{1, 2, 3}, //
+                   {4, 5, 6}, //
+                   {7, 8, 9}, //
+                   {10, 11, 12}};
+    int* mPtr = &m[0][0];
+
+    return 0;
+}
+#+end_src
+
+#+html: </div>
+#+html: <div class="column w-50">
+#+ATTR_REVEAL: :frag t
+[[./images/print_arrays.png]]
+#+html: </div>
+#+html: </div>
+
+** Usando com tipos do Armadillo
+:PROPERTIES:
+:CUSTOM_ID: vendo-tipos-do-armadillo
+:END:
+
+
+- Os tipos do armadillo possuem um ponteiro chamado =mem= que aponta para a
+  região de memória onde os elementos são armazenados
+- Vara visualizar um vetor use o código abaixo
+
+#+begin_src gdb-script
+p *myvec.mem@size
+#+end_src
+
+- Para matrizes use
+
+#+begin_src gdb-script
+p *mymat.mem@n_rows@n_cols
+#+end_src
+
+
+** Dica
+:PROPERTIES:
+:CUSTOM_ID: view-struct-arrays
+:END:
+
+- Para ver o valor de um campo em um array de estruturas, use uma variável de
+  conveniência como contador
+  #+begin_src gdb-script
+  set $i = 0
+  p mystruct_array[$i++]->some_field
+  #+end_src
+  #+ATTR_REVEAL: :frag t
+  - Basta pressionar {{{kbd(Enter)}}} repetidamente para ver os próximos elementos no array
+
+#+ATTR_REVEAL: :frag (t)
+- Também é possível usar a variável de conveniência dentro de um loop para
+  imprimir apenas um campo do array
+  #+begin_src gdb-script
+  set $i = 0
+  while ($i<array_length)
+      p mystruct_array[$i++]->some_field
+  end
+  #+end_src
+
+* Tipos de breakpoints
+** Setando breakpoint onde uma exceção é disparada
+:PROPERTIES:
+:CUSTOM_ID: break-in-exceptions
+:END:
+
+- Existem vários tipos de breakpoint, como breakpoints que capturam eventos de `catch`
+
+
+#+begin_src gdb-script
+catch throw
+run
+#+end_src
+
+- O problema é que ele para em qualquer exceção disparada
+  - Dica: use "=catch throw=" como um commando que é rodado quando algum outro
+    breakpoint for atingido para capturar apenas exceções disparadas depois dele
+
+# ![:box moody, Nota](
+- Veja outros eventos de catch em
+  http://www.sourceware.org/gdb/current/onlinedocs/gdb.html#Set-Catchpoints
+
+** Watchpoints
+:PROPERTIES:
+:CUSTOM_ID: watchpoints
+:END:
+
+- Tipo especial de breakpoint que para a execução do programa sempre que o valor de uma expressão mudar
+  - Ex: pare quando uma variável =x= for alterada
+
+  #+begin_src gdb-script
+  watch x
+  #+end_src
+
+- Também é possível parar sempre que uma variável for lida com
+
+  #+begin_src gdb-script
+  rwatch x
+  #+end_src
+
+- Se quiser parar em ambos os casos use
+
+  #+begin_src gdb-script
+  awatch x
+  #+end_src
+
+  # ![:box happy, Dica]
+Veja mais sobre breakpoints com =help breakpoints= no gdb
+
+  # ![:box moody, Nota](
+# - Se passar a opção =-l= o gdb vai observar a região de memória resultante da expressão
+
+
+* Python
+:PROPERTIES:
+:CUSTOM_ID: python
+:END:
+** gdb + Python = 💘
+:PROPERTIES:
+:CUSTOM_ID: gdb-com-python
+:END:
+
+#+ATTR_REVEAL: :frag (t)
+- GDB possui um interpretador python integrado
+- Use =python gdb.execute("some gdb command")= para executar comandos do gdb
+- Use =python gdb.parse_and_eval("some_variable")= para passar para o python um valor do gdb
+  #+ATTR_REVEAL: :frag t
+  - Ex: suponha que existe uma variável "=a=" no seu programa. O comando =a =
+    gdb.parse_and_eval('a')= vai criar um objeto no python representando essa
+    variável
+- Use =python help('gdb')= para ver documentação online
+
+- Exemplos (rode esses comandos no terminal do gdb)
+
+  #+begin_src gdb-script
+  python bp = gdb.Breakpoint('main.cpp:13')
+  python bp.enable=False
+  python bps = gdb.breakpoints()
+  python var_i = gdb.parse_and_eval('i')
+  #+end_src
+
+** Python Pretty Printers
+:PROPERTIES:
+:CUSTOM_ID: pretty-printers
+:END:
+
+- Possivelmente a aplicação mais interessante de python com o gdb
+- É possível criar e registrar pretty printers no GDB que o ensinam como
+  imprimir um serto tipo de maneira mais amigável
+- Suponha que você tenha um tipo chamado =mysctruct= contento um campo =member=
+  - Coloque o código abaixo em um arquivo =.py=
+
+#+begin_src python
+class MyPrinter(object):
+    def __init__(self, val):
+        self.val = val
+    def to_string(self):
+        return (self.val['member'])
+
+import gdb.printing
+pp = gdb.printing.RegexpCollectionPrettyPrinter("mystruct")
+pp.add_printer("mystruct", "^mystruct$", MyPrinter)
+#+end_src
+
+- Carregue o mesmo no gdb com =source filename.py=
+
+# ![:box moody, Nota]()
+- Coloque `set print pretty on` no arquivo `.gdbinit` na sua home
+
+** Python Pretty Printers
+:PROPERTIES:
+:CUSTOM_ID: pretty-printers2
+:END:
+
+- O GDB já vem com pretty printers para os tipos da STL
+- Para o armadillo, alguns pretty printers estão disponíveis em <https://github.com/darcamo/gdb_armadillo_helpers>
+- Após clonar o repositório, adicione as linhas abaixo no seu .gdbinit
+
+#+begin_src gdb-script
+source /path_onde_clonou/gdb_armadillo_helpers/gdb_helpers/gdb_armadillo_printers.py
+source /path_onde_clonou/gdb_armadillo_helpers/gdb_helpers/gdb_std_complex_printer.py
+#+end_src
+
+** XMethods
+:PROPERTIES:
+:CUSTOM_ID: xmethods
+:END:
+- Outra aplicação de Python+GDB
+- Xmethods são métodos adicionais ou substitutos para métodos de uma classe em
+  C++
+  - Útil para casos quando os métodos definidos no C++ não estejam disponíveis
+    (inline, optimized-out, etc)
+- Para implementar um xmethod é necessário criar um =matcher= e um =worker=
+  - Mais de um =worker= pode ser implementado para um mesmo xmethod, cada um
+    correspondendo a um overload diferente
+
+
+- Para o armadillo, alguns pretty printers estão disponíveis em <https://github.com/darcamo/gdb_armadillo_helpers>
+- Após clonar o repositório, adicione as linhas abaixo no seu .gdbinit
+
+#+begin_src gdb-script
+source /path_onde_clonou/gdb_armadillo_helpers/gdb_helpers/gdb_armadillo_xmethods.py
+#+end_src
+
+** Python Interativo
+:PROPERTIES:
+:CUSTOM_ID: python-interativo
+:END:
+
+- O comando =pi= (ou =python-interactive=) do gdb roda o python de maneira
+  iterativa
+  - Útil para testes e para explorar a API
+- Adicione a linha abaixo no seu .gdbinit após clonar o repositório
+  =gdb_armadillo_helpers= para ter a função =get_arrat= disponível no python do gdb
+
+
+#+begin_src gdb-script
+source /path_onde_clonou/gdb_armadillo_helpers/gdb_helpers/gdb_armadillo_to_numpy.py
+#+end_src
+
+- Agora rode o python iterativo com o comando =pi=
+- Supondo que você possui um =arma::cx_mat= de nome =m= você pode criar um numpy
+  array a partir dele com
+
+#+begin_src python
+>>> m_numpy = get_array(gdb.parse_and_eval('m'))
+#+end_src
+
+** Exemplo útil: Computar posições dos elementos de uma URA
+:PROPERTIES:
+:CUSTOM_ID: exemplo1
+:END:
+
+  - Crie um arquivo =.gdbinit= na pasta contento o executável (chamado de =tests=)
+
+
+#+begin_src gdb-script
+  file tests
+  set args "[Antenna]"
+  start
+  # Linha 311 é logo após a variável 'positions' ser setada
+  b test_URA.cpp:311
+  commands 2
+    source plot_positions.py
+  end
+  run
+#+end_src
+
+
+  - Na mesma pasta crie o arquivo =plot_positions.py= com o conteúdo abaixo
+
+
+#+begin_src python
+  from matplotlib import pyplot as plt
+  p = get_array(gdb.parse_and_eval("positions")) # positions é a variável no C++
+  plt.plot(p[1], p[2], "*")
+  for i in range(p.shape[1]):
+      plt.text(p[1,i], p[2,i], i)
+  plt.show()
+#+end_src
+
+** Exemplo útil: Computar posições dos elementos de uma URA
+:PROPERTIES:
+:CUSTOM_ID: exemplo2
+:END:
+- Agora basta rodar =gdb= e o programa vai parar na linha 311 e plotar as
+  posições dos elementos de antenna
+
+
+[[gdb_matplotlib.png]]
+
+** IPython Interativo
+:PROPERTIES:
+:CUSTOM_ID: ipython-interativo
+:END:
+- O python interativo do gdb funciona bem, mas não chega perto de um IPython
+- Iniciar o IPython a partir do gdb não funciona (tab completion não funciona
+  além de outros problemas
+- **Workaround:** Inicializar um kernel embeded e conectar a partir de outro terminal
+  1. Inicialize o python interativo com =pi=
+  2. No python interativo rode o comando
+     #+begin_src python
+     import IPython; IPython.embed_kernel()
+     #+end_src
+  3. A partir de outro terminal rode o comando
+     #+begin_src bash
+     jupyter console --existing
+     #+end_src
+     - O =qtconsole= também funciona
+  4. Use =exit()= no terminal conectado para desligar o kernel
+     - O gdb volta para o python interativo comum
+
+** Outras Dicas
+:PROPERTIES:
+:CUSTOM_ID: outras-dicas
+:END:
+- =whatis <variável>= diz o tipo da variável
+- =ptype <variável>= mostra uma descrição do tipo da variável
+- Use =skip= para não entrar em uma função
+  - Ex: =foo(boring())= e você quer entrar em =foo=, mas não em =boring=
+    - Use =skip boring= e depois =step= para entrar em foo sem entrar em boring
+- Frame filters: Veja no cppsim
+  - Veja tb: http://jefftrull.github.io/c++/gdb/python/2018/04/24/improved-backtrace.html
+- =info locals=
+- =info args=
+- Use the =pgrep= command in the shell to get the pid of a process and then =gdb -p <PID>= to attach to it
+
+* Examplo de uso: Debugando Segmentation Fault
+:PROPERTIES:
+:CUSTOM_ID: debugando-segmentation-fault
+:END:
+- Quando gerar um core file, use o comando abaixo
+
+#+begin_src bash
+$ gdb -c core.xxxx
+#+end_src
+
+#+begin_src gdb-script
+print $pc
+#+end_src
+
+- =x= -> comando para examinar a memória
+- =x $= -> examina memória do resultado do último comando
+- =bt= -> Mostra o backtrace
+
+Se isso não resolver, rode o programa no gdb, dê =start= e rode o comando
+=record=. Agora você pode usar o comando =reverse-stepi= para voltar um passo.
+
+* Outras dicas
+:PROPERTIES:
+:CUSTOM_ID: outras-dicas
+:END:
+
+- Não consegue chamar uma função do seu código quando parado no gdb?
+  - Grepping the demangle symbols in the binary is a good way to know if the function
+    you're trying to call is in teh binary
+
+
+#+begin_src bash
+nm -C your_binary | grep print_matrix
+#+end_src
+
+* Criando comandos customizados para o gdb
+:PROPERTIES:
+:CUSTOM_ID: criando-novos-comandos
+:END:
+https://interrupt.memfault.com/blog/automate-debugging-with-gdb-python-api
+
+* Make gdb's python use a virtual environment
+https://interrupt.memfault.com/blog/using-pypi-packages-with-GDB
+
+* Queremos um pouco mais
+** akjshdas
+:PROPERTIES:
+:reveal_background: linear-gradient(to left, #910830, #521623)
+:END:
+** sdkjfhsdf
+
+** dskjhfgsdf

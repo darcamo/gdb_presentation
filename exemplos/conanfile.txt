@@ -1,0 +1,11 @@
+[requires]
+armadillo/[>=11.2.0]
+
+[generators]
+# CMakeDeps
+# CMakeToolchain
+cmake
+
+[options]
+# armadillo:use_extern_rng=True
+armadillo:use_system_blas=True

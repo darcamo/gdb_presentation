@@ -1,0 +1,172 @@
+/* .title { */
+/*     font-size: 2.5em !important; */
+/* } */
+
+
+/* Incluo um heading TOC dentro de outro para ficar de acordo com o beamer aí
+   aqui apago um deles */
+#TOC {
+    display: none;
+}
+
+/* Make the list itens be left aligned (instead of the default centered aligned) */
+.reveal ol,
+.reveal dl,
+.reveal ul {
+    display: block;
+    text-align: left;
+    margin: 0 0 0 1em;
+}
+
+
+/* Remove the left margin of a pre inside a list element */
+.reveal li pre {
+    margin-left: 0;
+}
+
+
+/* Uso fragment fade-out no table of contents, mas não quero que desapareça por completo */
+/* Por isso sobrescrevo o que tem no css do revealjs */
+#TOC ~ ul > li.fade-out.visible {
+    opacity: 0.2;
+    visibility: visible;
+}
+
+/* .subway-map { */
+/*     margin-top: 120px; */
+/*     opacity: 0.45; */
+/* } */
+
+/* .subway-map object { */
+/*     width: 80%; */
+/* } */
+
+/* /\* Note: blend mode works only when there is a background image and a background */
+/*    color with "0 < opacity < 1" *\/ */
+/* .presentation-title-slide { */
+/*     background-image: url("../figs_presentation/cell_towers.jpg"); */
+/*     background-color: rgb(255, 255, 255, 0.5); */
+/*     background-size: cover; */
+/*     background-blend-mode: overlay; */
+/* } */
+
+/* .table-of-contents-slide { */
+/*     background-image: url("../figs_presentation/table-of-contents.jpg"); */
+/*     background-color: rgb(255, 255, 255, 0.9); */
+/*     background-size: cover; */
+/*     background-blend-mode: overlay; */
+/* } */
+
+/* .presentation-introduction { */
+/*     background-image: url("../figs_presentation/5g.jpg"); */
+/*     background-color: rgb(255, 255, 255, 0.85); */
+/*     background-size: cover; */
+/*     background-blend-mode: overlay; */
+/* } */
+
+/* .presentation-part-1 { */
+/*     background-image: url("../figs_presentation/part1.jpg"); */
+/*     background-color: rgb(255, 255, 255, 0.8); */
+/*     background-size: cover; */
+/*     background-blend-mode: overlay; */
+/* } */
+
+/* .presentation-part-2 { */
+/*     background-image: url("../figs_presentation/part2.jpg"); */
+/*     background-color: rgb(255, 255, 255, 0.93); */
+/*     background-size: cover; */
+/*     background-blend-mode: overlay; */
+/* } */
+
+/* .presentation-part-3 { */
+/*     background-image: url("../figs_presentation/part3.jpg"); */
+/*     background-color: rgb(255, 255, 255, 0.87); */
+/*     background-size: cover; */
+/*     background-blend-mode: overlay; */
+/* } */
+
+/* .presentation-conclusion { */
+/*     background-image: url("../figs_presentation/conclusion2.jpg"); */
+/*     background-color: rgb(255, 255, 255, 0.7); */
+/*     background-size: cover; */
+/*     background-blend-mode: overlay; */
+/* } */
+
+.org-ref-bib-h1 {
+    display: none;
+}
+
+span[class|=section-number] {
+    display: none;
+}
+
+.plot1 {
+    width: 95%;
+}
+
+.alert {
+    color: red !important;
+}
+
+.hidden {
+    display: none;
+}
+
+.small-text {
+    font-size: 0.8em !important;
+}
+
+.large-text {
+    font-size: 1.2em !important;
+}
+
+.huge-text {
+    font-size: 1.6em !important;
+}
+
+.tiny-text {
+    font-size: 0.6em !important;
+}
+
+.left-text {
+    text-align: left;
+}
+
+
+/* .make-it-pop h3, p { */
+/*     filter: drop-shadow(0 0 10px purple); */
+/* } */
+
+/* .reveal h2 { */
+/*     position: absolute; */
+/*     padding-top: 25%; */
+/*     padding-bottom: 25%; */
+/*     padding-left: 25%; */
+/*     padding-right: 25%; */
+/* } */
+
+
+
+/* Mude center no revealjs para FALSO */
+
+/* .reveal .slides > section.present, .reveal .slides > section > section.present { */
+/*     min-height: 100% !important; */
+/*     display: flex !important; */
+/*     flex-direction: column !important; */
+/*     justify-content: center !important; */
+/*     position: absolute !important; */
+/*     top: 0 !important; */
+/* } */
+/* section > h3 { */
+/*     position: absolute !important; */
+/*     top: 0 !important; */
+/*     margin-left: auto !important; */
+/*     margin-right: auto !important; */
+/*     left: 0 !important; */
+/*     right: 0 !important; */
+/* } */
+
+/* .print-pdf .reveal .slides > section.present, .print-pdf .reveal .slides > section > section.present { */
+/*     min-height: 770px !important; */
+/*     position: relative !important; */
+/* } */

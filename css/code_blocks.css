@@ -1,5 +1,12 @@
 
+/* Set a different text color for inline code in the paragraph, but
+   don't change the text color of code inside code blocks */
+p>code, li>code {
+    color: IndianRed;
+}
 
+/* By default reveal specify a max-height of 400px for code blocks,
+   but we want it a bit taller */
 .reveal pre code {
 	/* padding: 5px; */
 	/* overflow: auto; */

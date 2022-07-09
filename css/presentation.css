@@ -24,6 +24,9 @@
     margin-left: 0;
 }
 
+.reveal figure {
+    text-align: center;
+}
 
 /* Uso fragment fade-out no table of contents, mas não quero que desapareça por completo */
 /* Por isso sobrescrevo o que tem no css do revealjs */

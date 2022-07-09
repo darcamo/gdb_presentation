@@ -1,8 +1,12 @@
-
-
-#include <cstdlib>
 #include <ctime>
-#include <cstdio>
+#include <stdexcept>
+#include <iostream>
+
+
+double computeInverse(double value) {
+    if (value == 0) throw std::runtime_error("Value cannot be zero");
+    return 1.0 / value;
+}
 
 int main() {
     srand(time(NULL));
@@ -11,10 +15,10 @@ int main() {
     int array[arraySize];
 
     for(unsigned int i = 0; i < arraySize; i++) {
-        auto denominator = int(rand() % 200);
-        array[i]         = 1 / denominator;
+        auto denominator = rand() % 200;
+        array[i]         = computeInverse(denominator);
     }
 
-    printf("Fim\n");
+    std::cout << "Fim" << std::endl;
     return 0;
 }

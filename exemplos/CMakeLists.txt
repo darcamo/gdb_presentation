@@ -28,3 +28,5 @@ target_link_libraries(print_arrays2 CONAN_PKG::armadillo)
 
 
 add_executable(breakpoint_commands src/breakpoint_commands.cpp)
+
+add_executable(structured_array src/structured_array.cpp)

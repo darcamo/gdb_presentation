@@ -1,5 +1,5 @@
 # -*- ispell-local-dictionary: "brasileiro"; -*-
-#+TITLE: Um Pouco sobre GDB
+#+TITLE: Um pouco sobre GDB
 #+AUTHOR: Darlan Cavalcante Moreira
 #+DATE: Julho, 2022
 
@@ -21,6 +21,9 @@
 #+REVEAL_EXTRA_CSS: css/code_blocks.css
 #+REVEAL_EXTRA_CSS: css/kbd.css
 #+REVEAL_EXTRA_CSS: css/beamer_like_blocks.css
+#+REVEAL_TITLE_SLIDE_STATE: presentation-title-slide
+#+REVEAL_TOC_SLIDE_BACKGROUND: ./images/table-of-contents.jpg
+#+REVEAL_TOC_SLIDE_BACKGROUND_OPACITY: 0.1
 #+MACRO: frag (eval (concat "@@html:<span class=\"fragment\">@@" $1 "@@html:</span>@@"))
 #+MACRO: kbd (eval (concat "@@html:<kbd>@@" $1 "@@html:</kbd>@@"))
 
@@ -40,6 +43,9 @@ para atribuir a classe a um slide
 
 
 * Bla bla                                                                  :noexport:
+:PROPERTIES:
+:REVEAL_DATA_STATE: session-separation-slide
+:END:
 REVEAL_SPEED: fast
 REVEAL_MARGIN: 0.05
 REVEAL_INIT_OPTIONS: reveal_width:1188 reveal_height:840
@@ -47,13 +53,15 @@ REVEAL_INIT_OPTIONS: reveal_width:1188 reveal_height:840
 REVEAL_INIT_OPTIONS: reveal_center:t reveal_progress:t reveal_history:t reveal_control:nil
 REVEAL_INIT_OPTIONS: reveal_slide_number:c/t
 
-* Primeiro o básico
+* Vamos ao básico
 :PROPERTIES:
 :CUSTOM_ID: basico-do-gdb
+:REVEAL_DATA_STATE: session-separation-slide
 :END:
 ** Inicializando o GDB
 :PROPERTIES:
 :CUSTOM_ID:       inicializando-gdb
+:REVEAL_DATA_STATE:
 :END:
 
 - Para executar o gdb basta usar o comando abaixo no terminal
@@ -99,6 +107,7 @@ REVEAL_INIT_OPTIONS: reveal_slide_number:c/t
 ** Comandos principais do GDB
 :PROPERTIES:
 :CUSTOM_ID: comandos-principais
+:REVEAL_EXTRA_ATTR: data-auto-animate
 :END:
 
 - Alguns dos comandos principais do gdb são
@@ -135,16 +144,21 @@ info <break/threads/locals/args/etc> # Mostra informações do programa sendo de
 help, h                              # Ajuda sobre os comandos
 #+end_src
 
-# #+ATTR_HTML: :class fragment moody box
-# Muitos outros comandos estão disponíveis
 
-#+ATTR_HTML: :class fragment box moody
+** Dica
+:PROPERTIES:
+:CUSTOM_ID: comandos-gdb-dica
+:REVEAL_DATA_STATE: dica-slide
+:REVEAL_EXTRA_ATTR: data-auto-animate
+:END:
+
+\\
+
 Você não precisa digitar o comando completo
 
-#+begin_notes
-- Uma ou duas letras são suficientes
-- =b= para break, =c= para continue, etc
-#+end_notes
+Uma ou duas letras são suficientes
+
+=b= para break, =c= para continue, etc
 
 ** Criando breakpoints
 :PROPERTIES:
@@ -200,6 +214,7 @@ Você não precisa digitar o comando completo
 * Configurando o gdb
 :PROPERTIES:
 :CUSTOM_ID: configuracoes-interessantes
+:REVEAL_DATA_STATE: session-separation-slide
 :END:
 ** Evitando ver arquivos desinteressantes
 :PROPERTIES:
@@ -225,6 +240,7 @@ Você não precisa digitar o comando completo
 ** .gdbinit (global)
 :PROPERTIES:
 :CUSTOM_ID: gdbinit-global
+:REVEAL_EXTRA_ATTR: data-auto-animate
 :END:
 
 #+ATTR_REVEAL: :frag (t t) :frag_idx (1 2)
@@ -244,17 +260,21 @@ Você não precisa digitar o comando completo
   add-auto-load-safe-path /some_path/with/local_gdbinit_file/ # Uma pasta contendo um arquivo .gdbinit local
   #+end_src
 
-#+ATTR_HTML: :class moody box fragment :data-fragment-index 3
-=.gdbinit= na sua home também tem efeito quando o gdb é usado com algum front-end
 
-# #+ATTR_HTML: :class moody box fragment :data-fragment-index 3
-# Você pode ter um arquivo =.gdbinit= em um projeto com diversas configurações úteis para
-#   aquele projeto
+** Dica
+:PROPERTIES:
+:CUSTOM_ID: gdb-global-dica
+:REVEAL_DATA_STATE: dica-slide
+:REVEAL_EXTRA_ATTR: data-auto-animate
+:END:
+
+\\
+
+=.gdbinit= na sua home também tem efeito quando o gdb é usado com algum front-end
 
 ** .gdbinit (local)
 :PROPERTIES:
 :CUSTOM_ID: gdbinit-local
-:REVEAL_EXTRA_ATTR: data-auto-animate
 :END:
 
 #+ATTR_REVEAL: :frag (t)
@@ -272,29 +292,22 @@ Você não precisa digitar o comando completo
   run
   #+end_src
 
-- Devido a questões de segurança é necessario adicionar a linha abaixo no arquivo =.gdbinit= na sua home
+- Devido a questões de segurança é necessário adicionar a linha abaixo no arquivo =.gdbinit= na sua home
 
   #+begin_src gdb-script
   set auto-load local-gdbinit on
   add-auto-load-safe-path /path_da_pasta_onde_esta_o_outro_gdb_init/
   #+end_src
-** Dica
-:PROPERTIES:
-:REVEAL_EXTRA_ATTR: data-auto-animate
-:CUSTOM_ID: gdbinit-local-dica
-:END:
-
-\\
-
-Um arquivo =.gdbinit= local pode automatizar toda uma sessão de debug
 
 * Truques úteis
 :PROPERTIES:
 :CUSTOM_ID: truques-uteis
+:REVEAL_DATA_STATE: session-separation-slide
 :END:
 ** Breakpoint Commands
 :PROPERTIES:
 :CUSTOM_ID: breakpoint-commands
+:REVEAL_EXTRA_ATTR: data-auto-animate
 :END:
 
 #+ATTR_REVEAL: :frag (t)
@@ -310,13 +323,17 @@ Um arquivo =.gdbinit= local pode automatizar toda uma sessão de debug
     > end
     #+end_src
 
+** Dica
+:PROPERTIES:
+:REVEAL_EXTRA_ATTR: data-auto-animate
+:CUSTOM_ID: breakpoint-commands-dica
+:REVEAL_DATA_STATE: dica-slide
+:END:
 
 \\
 
-#+ATTR_HTML: :class fragment moody box
 Comandos de breakpoint e um arquivo =.gdbinit= local podem automatizar toda uma sessão de
 debug
-
 
 ** Exemplo
 :PROPERTIES:
@@ -416,12 +433,13 @@ int main() {
 :END:
 
 #+ATTR_REVEAL: :frag (t)
-- GDB permite setar "variáveis de conveniência"
+- GDB permite salvar "variáveis de conveniência"
+  #+ATTR_REVEAL: :frag (t)
   - Essas variáveis existem apenas no GDB e não afetam o programa em execução
   - Você pode usar para guardar qualquer coisa (valores, ponteiros, expressões, etc)
 - Variáveis de conveniência são prefixadas com =$=
   - Qualquer nome precedido de =$= é válido (exceto se for igual a algum registrador)
-  # - Tambêm há "referências de histórico", que são números precedidos de =$=
+  # - Também há "referências de histórico", que são números precedidos de =$=
 - Para criar uma variável de conveniência usamos =set=
   #+begin_src text
   set $foo = *object_ptr
@@ -441,14 +459,14 @@ int main() {
 :PROPERTIES:
 :CUSTOM_ID: convenience-variables-hint
 :REVEAL_EXTRA_ATTR: data-auto-animate
+:REVEAL_DATA_STATE: dica-slide
 :END:
-
-# :HTML_CONTAINER_CLASS: r-fit-text
 
 \\
 
-Salve o ponteiro de um objeto em uma variável de conveniência para acessá-lo de qualquer
-outro local (desde que o objeto ainda exista)
+Salve o ponteiro de um objeto em uma variável de conveniência. \\
+Assim poderá acessá-lo de qualquer outro local. \\
+(desde que o objeto ainda exista)
 
 ** Arrays Artificiais
 :PROPERTIES:
@@ -512,7 +530,7 @@ int main() {
 :END:
 
 #+ATTR_REVEAL: :frag (t)
-- As vezes estamos interessados apenas em um campo de uma estrutura em um array
+- Considere um array de estruturas onde queremos ver apenas um campo
 - Um truque interessante é usar uma variável de conveniência como contador
   #+begin_src gdb-script
   set $i = 0
@@ -553,6 +571,7 @@ p *mymat.mem@n_rows@n_cols
 * Tipos de breakpoints
 :PROPERTIES:
 :CUSTOM_ID: tipos-de-breakpoint
+:REVEAL_DATA_STATE: session-separation-slide
 :END:
 
 ** Os 3 tipos de breakpoint
@@ -575,32 +594,34 @@ p *mymat.mem@n_rows@n_cols
 Breakpoints podem ter uma condição de parada
 
 
-** Parando quando uma exceção é disparada
+** Catchpoints
 :PROPERTIES:
 :CUSTOM_ID: break-in-exceptions
 :END:
 
 #+ATTR_REVEAL: :frag (t)
-- para parar seu programa quando uma exceção é disparada use
+- Para parar seu programa quando uma exceção é disparada use
   #+begin_src gdb-script
   catch throw
   run
   #+end_src
 
 - Nota: vai para em qualquer exceção disparada
-- Dica: use =catch throw= como um commando que é rodado quando algum outro
+- Dica: use =catch throw= como um comando que é rodado quando algum outro
   breakpoint for atingido para capturar apenas exceções disparadas depois dele
+
+
+\\
 
 #+ATTR_HTML: :class fragment box moody
 Veja outros eventos de catch na documentação do gdb
-http://www.sourceware.org/gdb/current/onlinedocs/gdb.html#Set-Catchpoints
 
 ** Watchpoints
 :PROPERTIES:
 :CUSTOM_ID: watchpoints
 :END:
 
-#+ATTR_REVEAL: :frag (none t t) :frag_idx (- 1 2)
+#+ATTR_REVEAL: :frag (t t t) :frag_idx (1 2 3)
 - Exemplo de uso: pare quando uma variável =x= for alterada
   #+begin_src gdb-script
   watch x
@@ -621,7 +642,7 @@ http://www.sourceware.org/gdb/current/onlinedocs/gdb.html#Set-Catchpoints
 \\
 
 # ![:box happy, Dica]
-#+ATTR_HTML: :class moody box fragment :data-fragment-index 3
+#+ATTR_HTML: :class moody box fragment :data-fragment-index 4
 Veja mais sobre breakpoints com =help breakpoints= no gdb
 
 
@@ -633,21 +654,26 @@ Veja mais sobre breakpoints com =help breakpoints= no gdb
 * Python
 :PROPERTIES:
 :CUSTOM_ID: python
+:REVEAL_DATA_STATE: session-separation-slide
 :END:
 ** gdb + Python = 💘
 :PROPERTIES:
 :CUSTOM_ID: gdb-com-python
+:REVEAL_EXTRA_ATTR: data-auto-animate
 :END:
 
 #+ATTR_REVEAL: :frag (t)
 - GDB possui um interpretador python integrado
-- Use =python gdb.execute("some gdb command")= para executar comandos do gdb
-- Use =python gdb.parse_and_eval("some_variable")= para passar para o python um valor do gdb
-  #+ATTR_REVEAL: :frag t
-  - Ex: suponha que existe uma variável =a= no seu programa. O comando =a =
-    gdb.parse_and_eval('a')= vai criar um objeto no python representando essa
-    variável
-- Use =python help('gdb')= para ver documentação online
+- Para rodar um comando em python use =python comando=
+- Ou inicialize um interpretador python com =python-interactive= ou apenas =pi=
+- No python integrado a um módulo =gdb= que pode ser usado para interagir com o gdb
+- Exemplo:
+  # - "6 por meia dúzia": =python gdb.execute("some gdb command")=
+  - Acessando uma variável no python:
+    #+begin_src gdb-script
+    python python_var = gdb.parse_and_eval("some_variable")
+    #+end_src
+- Use =python help('gdb')= para ver documentação do módulo =gdb=
 
 - Exemplos (rode esses comandos no terminal do gdb)
 
@@ -658,94 +684,207 @@ Veja mais sobre breakpoints com =help breakpoints= no gdb
   python var_i = gdb.parse_and_eval('i')
   #+end_src
 
-** Python Pretty Printers
+** Quais os usos úteis dessa integração?
+:PROPERTIES:
+:CUSTOM_ID: gdb-com-python-question
+:REVEAL_EXTRA_ATTR: data-auto-animate
+:END:
+
+#+ATTR_HTML: :width 55%
+[[./images/question.jpg]]
+
+
+** Pretty Printers
 :PROPERTIES:
 :CUSTOM_ID: pretty-printers
+:REVEAL_EXTRA_ATTR: data-auto-animate
 :END:
 
-- Possivelmente a aplicação mais interessante de python com o gdb
-- É possível criar e registrar pretty printers no GDB que o ensinam como
-  imprimir um serto tipo de maneira mais amigável
-- Suponha que você tenha um tipo chamado =mysctruct= contento um campo =member=
-  - Coloque o código abaixo em um arquivo =.py=
+# - Possivelmente a aplicação mais interessante de python com o gdb
 
-#+begin_src python
-class MyPrinter(object):
-    def __init__(self, val):
-        self.val = val
-    def to_string(self):
-        return (self.val['member'])
+#+ATTR_REVEAL: :frag (t)
+- Podemos criar e registrar pretty printers para nossos tipos de interesse no C++
+- Ensinamos ao gdb como representar um tipo C++ como string
+- Suponha que você tenha um tipo chamado =mysctruct= contendo um campo =member=
+- Podemos criar e registrar um pretty-printer para =mystruct= como abaixo
 
-import gdb.printing
-pp = gdb.printing.RegexpCollectionPrettyPrinter("mystruct")
-pp.add_printer("mystruct", "^mystruct$", MyPrinter)
-#+end_src
+  #+begin_src python
+  class MyPrinter(object):       # Classe que sabe converter nosso tipo em uma representação como string
+      def __init__(self, val):   # 'val' é a representação no nosso objeto C++ no Python
+          self.val = val
+      def to_string(self):
+          return (self.val['member'])
 
-- Carregue o mesmo no gdb com =source filename.py=
+  import gdb.printing
+  pp = gdb.printing.RegexpCollectionPrettyPrinter("my_library")  # Vamos usar para registrar nosso PP
+  pp.add_printer("mystruct", "^mystruct$", MyPrinter)            # Registra nosso pretty-printer
+  #+end_src
 
-# ![:box moody, Nota]()
-- Coloque `set print pretty on` no arquivo `.gdbinit` na sua home
+- Basta carregar o arquivo Python com o código acima no gdb com =source filename.py=
 
-** Python Pretty Printers
+
+
+
+#+ATTR_HTML: :class fragment moody box
+Não esqueça de colocar =set print pretty on= no seu arquivo =.gdbinit= global
+
+** Pretty Printers
 :PROPERTIES:
 :CUSTOM_ID: pretty-printers2
+:REVEAL_EXTRA_ATTR: data-auto-animate
 :END:
 
+#+ATTR_REVEAL: :frag (t)
 - O GDB já vem com pretty printers para os tipos da STL
-- Para o armadillo, alguns pretty printers estão disponíveis em <https://github.com/darcamo/gdb_armadillo_helpers>
-- Após clonar o repositório, adicione as linhas abaixo no seu .gdbinit
+- Ao imprimir um objeto do tipo =std::vector<myscruct>= vemos o efeito do pretty-printer para =std::vector=
+  e para o tipo =mystruct=
+- Exemplo: Visualizar uma matriz 6x3 de números complexos (usando a biblioteca [[http://arma.sourceforge.net/][armadillo]])
 
-#+begin_src gdb-script
-source /path_onde_clonou/gdb_armadillo_helpers/gdb_helpers/gdb_armadillo_printers.py
-source /path_onde_clonou/gdb_armadillo_helpers/gdb_helpers/gdb_std_complex_printer.py
-#+end_src
+  #+html: <div class="columns">
+  #+ATTR_REVEAL: :frag t
+  [[./images/m2_without_pretty_printing.png]]
+
+  #+ATTR_REVEAL: :frag t
+  [[./images/m2_with_pretty_printint.png]]
+  #+html: </div>
 
 ** XMethods
 :PROPERTIES:
 :CUSTOM_ID: xmethods
 :END:
-- Outra aplicação de Python+GDB
-- Xmethods são métodos adicionais ou substitutos para métodos de uma classe em
-  C++
+
+#+ATTR_REVEAL: :frag (t)
+- Xmethods são métodos *adicionais* ou *substitutos* para métodos de uma classe em C++
+  #+ATTR_REVEAL: :frag (t)
   - Útil para casos quando os métodos definidos no C++ não estejam disponíveis
     (inline, optimized-out, etc)
+  - Podem ser usados mesmo quando debugando a partir de um core file
 - Para implementar um xmethod é necessário criar um =matcher= e um =worker=
   - Mais de um =worker= pode ser implementado para um mesmo xmethod, cada um
     correspondendo a um overload diferente
 
+\\
 
-- Para o armadillo, alguns pretty printers estão disponíveis em <https://github.com/darcamo/gdb_armadillo_helpers>
-- Após clonar o repositório, adicione as linhas abaixo no seu .gdbinit
-
-#+begin_src gdb-script
-source /path_onde_clonou/gdb_armadillo_helpers/gdb_helpers/gdb_armadillo_xmethods.py
-#+end_src
+#+ATTR_HTML: :class moody box fragment
+Veja mais na documentação do gdb
 
 ** Python Interativo
 :PROPERTIES:
 :CUSTOM_ID: python-interativo
+:REVEAL_EXTRA_ATTR: data-auto-animate
 :END:
 
-- O comando =pi= (ou =python-interactive=) do gdb roda o python de maneira
-  iterativa
-  - Útil para testes e para explorar a API
-- Adicione a linha abaixo no seu .gdbinit após clonar o repositório
-  =gdb_armadillo_helpers= para ter a função =get_arrat= disponível no python do gdb
+#+ATTR_REVEAL: :frag (t)
+- O comando =pi= (ou =python-interactive=) roda o python de maneira iterativa
+  - Especialmente útil para testes e para explorar a API
+- Permite explorar o estado de um programa usando Python
+- *Exemplo*: Gerar pontos uniformemente em um círculo
+  #+begin_src c++
+  std::vector<std::complex<double>> calcRandomPointsInsideCircle(unsigned int numPoints, double maxRadius) {
+      std::default_random_engine generator;
+      std::uniform_real_distribution<double> radiusDistribution(0.0, maxRadius);
+      std::uniform_real_distribution<double> angleDistribution(0.0, 2 * M_PI);
+
+      std::vector<std::complex<double>> points;
+      points.reserve(numPoints);
+
+      std::generate_n(std::back_inserter(points), numPoints, [&]() -> std::complex<double> {
+          auto radius = radiusDistribution(generator);
+          auto angle  = angleDistribution(generator);
+          return radius * std::exp(std::complex<double>(0, -angle));
+      });
+
+      return points;
+  }
+  #+end_src
+
+#+ATTR_HTML: :class fragment moody box
+Como checar se os pontos gerados são uniformes durante o plot?
 
 
-#+begin_src gdb-script
-source /path_onde_clonou/gdb_armadillo_helpers/gdb_helpers/gdb_armadillo_to_numpy.py
-#+end_src
 
-- Agora rode o python iterativo com o comando =pi=
-- Supondo que você possui um =arma::cx_mat= de nome =m= você pode criar um numpy
-  array a partir dele com
+# - Adicione a linha abaixo no seu =.gdbinit= após clonar o repositório
+#   =gdb_armadillo_helpers= para ter a função =get_arrat= disponível no python do gdb
 
-#+begin_src python
->>> m_numpy = get_array(gdb.parse_and_eval('m'))
-#+end_src
+#   #+begin_src gdb-script
+#   source /path_onde_clonou/gdb_armadillo_helpers/gdb_helpers/gdb_armadillo_to_numpy.py
+#   #+end_src
 
-** Exemplo útil: Computar posições dos elementos de uma URA
+# - Agora rode o python iterativo com o comando =pi=
+# - Supondo que você possui um =arma::cx_mat= de nome =m= você pode criar um numpy
+#   array a partir dele com
+
+#   #+begin_src python
+#   >>> m_numpy = get_array(gdb.parse_and_eval('m'))
+#   #+end_src
+
+
+** Python Interativo
+:PROPERTIES:
+:CUSTOM_ID: python-interativo2
+:REVEAL_EXTRA_ATTR: data-auto-animate
+:END:
+
+\\
+
+Podemos visualizar os pontos gerados durante o debug ...
+
+\\
+
+#+ATTR_REVEAL: :frag t
+usando matplotlib
+
+
+
+** Python Interativo
+:PROPERTIES:
+:CUSTOM_ID: python-interativo3
+:REVEAL_EXTRA_ATTR: data-auto-animate
+:END:
+
+#+ATTR_REVEAL: :frag (none t) :frag_idx (0 1)
+- Para isso precisamos converter o vetor do =std::vector<std::complex<double>>= para um
+  array do numpy
+- Basta carregar o código abaixo no gdb para poder usar durante o python interativo
+  #+begin_src python
+  def _cast_to_complex(gdb_value):
+      double_t = gdb.lookup_type('double')
+      # We need to cast gdb_value into an array of two doubles. Then we can
+      # access the real and imaginary parts as the first and second elements
+      real_and_imag_parts = gdb_value.cast(double_t.array(1))
+      return complex(real_and_imag_parts[0], real_and_imag_parts[1])
+
+  def get_array_from(v):
+      start_mem = v["_M_impl"]["_M_start"]
+      finish_mem = v["_M_impl"]["_M_finish"]
+      n_elem = finish_mem - start_mem
+      return np.array([_cast_to_complex(start_mem[i]) for i in range(n_elem)])
+  #+end_src
+
+
+** Ambiente virtual para o Python do gdb
+:PROPERTIES:
+:CUSTOM_ID: ambiente-virtual
+:REVEAL_DATA_STATE:
+:END:
+# https://interrupt.memfault.com/blog/using-pypi-packages-with-GDB
+
+#+ATTR_REVEAL: :frag (t t t t) :frag_idx (1 2 3 4)
+- O gdb usa o python do sistema
+- Podemos querer usar alguma biblioteca Python dentro do gdb
+- Inicializar o gdb a partir de um ambiente virtual não muda esse fato
+- Solução:
+  #+ATTR_REVEAL: :frag (strike t t) :frag_idx (5 5 6)
+  - Instalar a biblioteca usando =sudo pip install=
+  - Adicionar as pastas necessárias do path
+  - Rode o comando abaixo no ambiente virtual
+
+    #+begin_src bash
+    python -c "import sys; print(sys.path)
+    #+end_src
+    e adicione as pastas no path do Python do gdb via =.gdbinit=
+
+** Exemplo: Computar posições dos elementos de uma URA                    :noexport:
 :PROPERTIES:
 :CUSTOM_ID: exemplo1
 :END:
@@ -778,7 +917,7 @@ source /path_onde_clonou/gdb_armadillo_helpers/gdb_helpers/gdb_armadillo_to_nump
   plt.show()
 #+end_src
 
-** Exemplo útil: Computar posições dos elementos de uma URA
+** Exemplo útil: Computar posições dos elementos de uma URA               :noexport:
 :PROPERTIES:
 :CUSTOM_ID: exemplo2
 :END:
@@ -788,7 +927,7 @@ source /path_onde_clonou/gdb_armadillo_helpers/gdb_helpers/gdb_armadillo_to_nump
 
 [[gdb_matplotlib.png]]
 
-** IPython Interativo
+** IPython Interativo                                                     :noexport:
 :PROPERTIES:
 :CUSTOM_ID: ipython-interativo
 :END:
@@ -809,7 +948,13 @@ source /path_onde_clonou/gdb_armadillo_helpers/gdb_helpers/gdb_armadillo_to_nump
   4. Use =exit()= no terminal conectado para desligar o kernel
      - O gdb volta para o python interativo comum
 
-** Outras Dicas
+
+* Outras dicas                                                             :noexport:
+:PROPERTIES:
+:CUSTOM_ID: conteudo-extra
+:REVEAL_DATA_STATE: session-separation-slide
+:END:
+** Alguns outros comandos úteis
 :PROPERTIES:
 :CUSTOM_ID: outras-dicas
 :END:
@@ -824,9 +969,10 @@ source /path_onde_clonou/gdb_armadillo_helpers/gdb_helpers/gdb_armadillo_to_nump
 - =info args=
 - Use the =pgrep= command in the shell to get the pid of a process and then =gdb -p <PID>= to attach to it
 
-* Examplo de uso: Debugando Segmentation Fault
+** Examplo de uso: Debugando Segmentation Fault                           :noexport:
 :PROPERTIES:
 :CUSTOM_ID: debugando-segmentation-fault
+:REVEAL_DATA_STATE:
 :END:
 - Quando gerar um core file, use o comando abaixo
 
@@ -845,9 +991,10 @@ print $pc
 Se isso não resolver, rode o programa no gdb, dê =start= e rode o comando
 =record=. Agora você pode usar o comando =reverse-stepi= para voltar um passo.
 
-* Outras dicas                                                             :noexport:
+** Descobrindo quais funções do C++ podemos chamar no gdb                 :noexport:
 :PROPERTIES:
 :CUSTOM_ID: outras-dicas
+:REVEAL_DATA_STATE:
 :END:
 
 - Não consegue chamar uma função do seu código quando parado no gdb?
@@ -859,32 +1006,17 @@ Se isso não resolver, rode o programa no gdb, dê =start= e rode o comando
 nm -C your_binary | grep print_matrix
 #+end_src
 
-* Criando comandos customizados para o gdb
+** Criando comandos customizados para o gdb
 :PROPERTIES:
 :CUSTOM_ID: criando-novos-comandos
+:REVEAL_DATA_STATE:
 :END:
 https://interrupt.memfault.com/blog/automate-debugging-with-gdb-python-api
 
-* Ambiente virtual para o Python do gdb
-:PROPERTIES:
-:CUSTOM_ID: ambiente-virtual
-:END:
-# https://interrupt.memfault.com/blog/using-pypi-packages-with-GDB
-
-#+ATTR_REVEAL: :frag (t t t) :frag_idx (1 2 3)
-- O gdb usa o python do systema
-- Inicializar a partir de um ambiente virtual não muda esse fato
-- Solução:
-  #+ATTR_REVEAL: :frag (strike t t) :frag_idx (4 4 5)
-  - Instalar qualquer pacote que precisamos usando =sudo pip install=
-  - Adicionar as pastas necessárias do path
-  - Rode o comando abaixo no ambiente virtual
-    #+begin_src bash
-    python -c "import sys; print(sys.path)
-    #+end_src
-    e adicione as pastas no path do python do gdb via =.gdbinit=
-
 * Queremos um pouco mais                                                   :noexport:
+:PROPERTIES:
+:REVEAL_DATA_STATE: session-separation-slide
+:END:
 ** akjshdas
 :PROPERTIES:
 :reveal_background: linear-gradient(to left, #910830, #521623)
@@ -892,3 +1024,9 @@ https://interrupt.memfault.com/blog/automate-debugging-with-gdb-python-api
 ** sdkjfhsdf
 
 ** dskjhfgsdf
+
+* Perguntas?
+:PROPERTIES:
+:CUSTOM_ID: thats-all-folks
+:REVEAL_DATA_STATE: the-end-slide
+:END:

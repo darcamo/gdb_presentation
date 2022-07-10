@@ -35,6 +35,47 @@
     visibility: visible;
 }
 
+
+.session-separation-slide {
+    background-image: url("../images/background.jpg");
+    background-color: rgb(255, 255, 255, 0.5);
+    background-size: cover;
+    background-blend-mode: overlay;
+}
+
+
+.dica-slide {
+    background-image: url("../images/dica.jpg");
+    background-color: rgb(255, 255, 255, 0.5);
+    background-size: cover;
+    background-blend-mode: overlay;
+}
+
+.presentation-title-slide {
+    background-image: url("../images/duck.jpg");
+    background-color: rgb(255, 255, 255, 0.8);
+    background-size: cover;
+    background-blend-mode: overlay;
+}
+
+.table-of-contents-slide {
+    background-image: url("../images/table-of-contents.jpg");
+    background-color: rgb(255, 255, 255, 0.9);
+    background-size: cover;
+    background-blend-mode: overlay;
+}
+
+
+.the-end-slide {
+    background-image: url("../images/thats-all-folks.jpg");
+    background-color: rgb(255, 255, 255, 0.9);
+    background-size: cover;
+    background-blend-mode: overlay;
+}
+
+
+
+
 /* .subway-map { */
 /*     margin-top: 120px; */
 /*     opacity: 0.45; */
@@ -53,12 +94,6 @@
 /*     background-blend-mode: overlay; */
 /* } */
 
-/* .table-of-contents-slide { */
-/*     background-image: url("../figs_presentation/table-of-contents.jpg"); */
-/*     background-color: rgb(255, 255, 255, 0.9); */
-/*     background-size: cover; */
-/*     background-blend-mode: overlay; */
-/* } */
 
 /* .presentation-introduction { */
 /*     background-image: url("../figs_presentation/5g.jpg"); */

@@ -23,10 +23,14 @@ endif()
 
 add_executable(print_arrays src/print_arrays.cpp)
 
-add_executable(print_arrays2 src/print_arrays2.cpp)
-target_link_libraries(print_arrays2 CONAN_PKG::armadillo)
+add_executable(print_armadillo src/print_armadillo.cpp)
+target_link_libraries(print_armadillo CONAN_PKG::armadillo)
 
 
 add_executable(breakpoint_commands src/breakpoint_commands.cpp)
 
 add_executable(structured_array src/structured_array.cpp)
+
+
+add_executable(random_points src/random_points.cpp)
+target_link_libraries(random_points CONAN_PKG::armadillo)

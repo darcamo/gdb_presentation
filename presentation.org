@@ -10,12 +10,13 @@
 #+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
 #+REVEAL_THEME: serif
 
+#+REVEAL_REVEAL_JS_VERSION: 4
 #+REVEAL_MIN_SCALE:1
 #+REVEAL_INIT_OPTIONS: margin: 0.0, width: 1777, height: 1000,
 #+REVEAL_INIT_OPTIONS: slideNumber: "c/t", transition: 'slide', transitionSpeed: "fast", history: false, hash: true, respondToHashChanges: true
-#+REVEAL_PLUGINS: (highlight notes zoom)
+#+REVEAL_PLUGINS: (highlight notes zoom search)
+#+REVEAL_EXTERNAL_PLUGINS: (plugin1 . "ex/plugin1.js")
 #+REVEAL_TITLE_SLIDE: <h1 class="title">%t</h1><h2>%s</h2></br></br></br><h3 class="author">%a</h3><h4 class="date">%d</h4>
-#+REVEAL_TITLE_SLIDE_STATE: presentation-title-slide
 #+HTML_HEAD_EXTRA: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/a11y-dark.min.css">
 #+HTML_HEAD_EXTRA: <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
 #+REVEAL_EXTRA_CSS: css/code_blocks.css
@@ -122,7 +123,6 @@ REVEAL_INIT_OPTIONS: reveal_slide_number:c/t
 #   - =b= para break, =c= para continue, etc
 
 
-#+ATTR_REVEAL: :code_attribs data-line-numbers=3,8-10"
 #+begin_src bash
 file                                 # Seta o arquivo a ser debugado (caso já não tenha sido passado)
 set args <command_line_parameters>   # Seta os parâmetros de linha de comando do programa
@@ -177,8 +177,7 @@ Uma ou duas letras são suficientes
 
 - Para templates o nome da função deve incluir o tipo do template
 - No caso da função abaixo
-  #+ATTR_REVEAL: :code_attribs data-line-numbers="3,8-10"
-  #+begin_src c++ -n
+  #+begin_src c++
   template <typename T>
   inline T doubleInput(const T& x) {
       return 2 * x;
@@ -501,7 +500,6 @@ Assim poderá acessá-lo de qualquer outro local. \\
 #+html: <div class="columns">
 #+html: <div class="column w-50">
 #+CAPTION: Exemplo
-#+ATTR_REVEAL: :code_attribs data-line-numbers="11"
 #+begin_src c++
 int main() {
     int a[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};

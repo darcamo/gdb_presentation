@@ -54,6 +54,17 @@ REVEAL_INIT_OPTIONS: reveal_width:1188 reveal_height:840
 REVEAL_INIT_OPTIONS: reveal_center:t reveal_progress:t reveal_history:t reveal_control:nil
 REVEAL_INIT_OPTIONS: reveal_slide_number:c/t
 
+* Navegando nessa apresentação
+** Básico do [[https://revealjs.com/][reveal.js]]
+:PROPERTIES:
+:CUSTOM_ID: basico-do-revealjs
+:END:
+#+ATTR_REVEAL: :frag (t)
+- No reveal.js os slides são organizados em um grid 2D
+  - Temos slides verticais e horizontais → tente {{{kbd(Esc)}}}
+- Use {{{kbd(Space)}}} para passar para o próximo slide
+- Use {{{kbd(Shift)}}} + {{{kbd(Space)}}} para voltar um slide
+- É possível fazer uma busca em toda a apresentação com {{{kbd(Ctrl)}}} + {{{kbd(Shift)}}} + {{{kbd(f)}}}
 * Vamos ao básico
 :PROPERTIES:
 :CUSTOM_ID: basico-do-gdb

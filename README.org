@@ -1,0 +1,7 @@
+Presentation about GDB (in Portuguese)
+
+Created using Emacs org-mode with the [[https://github.com/yjwen/org-reveal][org-reveal]] package.
+
+This presentation illustrates several nice GDB tips that help with the difficult task of debugging.
+
+See this presentation in https://darcamo.github.io/gdb_presentation.

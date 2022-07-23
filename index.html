@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Um pouco sobre GDB</title>
+<meta name="author" content="Darlan Cavalcante Moreira"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/serif.css" id="theme"/>
+
+<link rel="stylesheet" href="css/code_blocks.css"/>
+
+<link rel="stylesheet" href="css/kbd.css"/>
+
+<link rel="stylesheet" href="css/beamer_like_blocks.css"/>
+
+<link rel="stylesheet" href="css/presentation.css"/>
+
+<link rel="stylesheet" href="css/my_remark_main.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/lib/css/zenburn.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/a11y-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide" data-state="presentation-title-slide"><h1 class="title">Um pouco sobre GDB</h1><h2></h2></br></br></br><h3 class="author">Darlan Cavalcante Moreira</h3><h4 class="date">Julho, 2022</h4>
+</section>
+<section id="sec-table-of-contents" data-background="./images/table-of-contents.jpg" data-background-opacity="0.1"><nav id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#/slide-orge111ce6">Navegando nessa apresentação</a></li>
+<li><a href="#/slide-basico-do-gdb">Vamos ao básico</a></li>
+<li><a href="#/slide-configuracoes-interessantes">Configurando o gdb</a></li>
+<li><a href="#/slide-truques-uteis">Truques úteis</a></li>
+<li><a href="#/slide-tipos-de-breakpoint">Tipos de breakpoints</a></li>
+<li><a href="#/slide-python">Python</a></li>
+<li><a href="#/slide-thats-all-folks">Perguntas?</a></li>
+</ul>
+</div>
+</nav>
+</section>
+
+
+<section>
+<section id="slide-orge111ce6">
+<h2 id="orge111ce6">Navegando nessa apresentação</h2>
+<div class="outline-text-2" id="text-orge111ce6">
+</div>
+</section>
+<section id="slide-basico-do-revealjs">
+<h3 id="basico-do-revealjs">Básico do <a href="https://revealjs.com/">reveal.js</a></h3>
+<ul>
+<li class="fragment">No reveal.js os slides são organizados em um grid 2D
+<ul>
+<li>Temos slides verticais e horizontais → tente <kbd>Esc</kbd></li>
+
+</ul></li>
+<li class="fragment">Use <kbd>Space</kbd> para passar para o próximo slide</li>
+<li class="fragment">Use <kbd>Shift</kbd> + <kbd>Space</kbd> para voltar um slide</li>
+<li class="fragment">É possível fazer uma busca em toda a apresentação com <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>f</kbd></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-basico-do-gdb" data-state="session-separation-slide">
+<h2 id="basico-do-gdb">Vamos ao básico</h2>
+</section>
+<section id="slide-inicializando-gdb" data-state="">
+<h3 id="inicializando-gdb">Inicializando o GDB</h3>
+<ul>
+<li><p>
+Para executar o gdb basta usar o comando abaixo no terminal
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="bash" >gdb &lt;executável&gt;
+</code></pre>
+</div></li>
+
+</ul>
+<ul class="fragment">
+<li><p>
+O terminal muda para o prompt do gdb, onde diversos comandos estão disponíveis
+</p>
+
+
+<figure id="orgdb3fd9c">
+<img src="./images/gdb-screen.png" alt="gdb-screen.png">
+
+</figure></li>
+
+</ul>
+
+</section>
+<section id="slide-tui">
+<h3 id="tui">TUI</h3>
+<ul>
+<li>O GDB também possui uma interface de usuário em modo texto</li>
+<li data-fragment-index="1" class="fragment">Use <kbd>Ctrl</kbd>+<kbd>x</kbd> <kbd>A</kbd> para alternar entre a interface TUI e a interface normal</li>
+<li data-fragment-index="1" class="fragment">Use <kbd>Ctrl</kbd>+<kbd>x</kbd> <kbd>2</kbd> para dividir a tela</li>
+<li data-fragment-index="1" class="fragment">Use <kbd>Ctrl</kbd>+<kbd>x</kbd> <kbd>1</kbd> para voltar para uma única tela</li>
+
+</ul>
+
+
+
+<figure id="orgdeb41d7">
+<img src="./images/gdb_tui.png" alt="gdb_tui.png" class="r-stretch">
+
+</figure>
+
+</section>
+<section id="slide-other-frontends">
+<h3 id="other-frontends">Front-ends para GDB</h3>
+<ul>
+<li>Há vários front-ends para o GDB
+<ul>
+<li><a href="https://github.com/cs01/gdbgui/">gdbgui</a></li>
+<li><a href="https://github.com/epasveer/seer">seer</a></li>
+<li><a href="https://github.com/rohanrhu/gdb-frontend">gdb-frontend</a></li>
+<li>etc.</li>
+
+</ul></li>
+<li data-fragment-index="1" class="fragment">Provavelmente sua IDE ou editor de texto (no Linux) usa o GDB
+<ul>
+<li><a href="https://www.jetbrains.com/clion/">CLion</a></li>
+<li><a href="https://www.kdevelop.org/">KDevelop</a></li>
+<li><a href="https://code.visualstudio.com/">VSCode</a></li>
+<li><a href="https://www.gnu.org/software/emacs/">Emacs</a></li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-comandos-principais" data-auto-animate>
+<h3 id="comandos-principais">Comandos principais do GDB</h3>
+<ul>
+<li>Alguns dos comandos principais do gdb são</li>
+
+</ul>
+
+
+<div class="org-src-container">
+
+<pre   ><code class="bash" >file                                 # Seta o arquivo a ser debugado (caso já não tenha sido passado)
+set args &lt;command_line_parameters&gt;   # Seta os parâmetros de linha de comando do programa
+start                                # Inicia o programa a ser debugado parando na main
+run, r                               # Roda o programa a ser debugado
+backtrace, bt                        # Imprime o backtrace
+frame, f                             # Seleciona ou imprime o frame stack
+next, n                              # Avança uma linha no arquivo atual
+step, s                              # Avança até a próxima linha de código
+until                                # Avança até a linha especificada
+finish, fin                          # Executa o programa até o frame atual retornar (acabar a função atual)
+up, u                                # Seleciona e imprime o stack frame que chamou o atual
+down, d                              # Seleciona e imprime o stack frame chamado pelo atual
+break, b                             # Seta um breakpoint
+rbreak, rb                           # Seta um breakpoint usando expressão regular
+ignore                               # Ignore um breakpoint um certo número de vezes
+continue, c                          # Continua execução do programa
+info &lt;break/threads/locals/args/etc&gt; # Mostra informações do programa sendo debugado
+help, h                              # Ajuda sobre os comandos
+</code></pre>
+</div>
+
+
+</section>
+<section id="slide-comandos-gdb-dica" data-state="dica-slide" data-auto-animate>
+<h3 id="comandos-gdb-dica">Dica</h3>
+<p>
+<br>
+</p>
+
+<p>
+Você não precisa digitar o comando completo
+</p>
+
+<p>
+Uma ou duas letras são suficientes
+</p>
+
+<p>
+<code>b</code> para break, <code>c</code> para continue, etc
+</p>
+
+</section>
+<section id="slide-criando-breakpoints" data-auto-animate>
+<h3 id="criando-breakpoints">Criando breakpoints</h3>
+<ul>
+<li class="fragment"><p>
+É possível adicionar breakpoints com
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="bash" >b line_number                # adiciona breakpoint na linha especificada no arquivo atual
+b function_name              # adiciona breakpoint no início da função especificada
+b filename.cpp:line_number   # Adiciona breakpoint especificando a linha e o arquivo
+</code></pre>
+</div></li>
+
+<li class="fragment">Para templates o nome da função deve incluir o tipo do template</li>
+<li class="fragment"><p>
+No caso da função abaixo
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="c++" >template &lt;typename T&gt;
+inline T doubleInput(const T&amp; x) {
+    return 2 * x;
+}
+</code></pre>
+</div>
+<p>
+é necessário <code>b doubleInput&lt;int&gt;</code>, ou <code>b doubleInput&lt;double&gt;</code>
+</p>
+<ul>
+<li>Note que ele vai parar apenas na instância específica do template</li>
+
+</ul></li>
+
+<li class="fragment">Caso use <code>b filename.cpp:line_number</code> em um template o gdb cria um breakpoint com
+múltiplas localizações (uma para cada instância do template)</li>
+
+</ul>
+
+</section>
+<section id="slide-criando-breakpoints2" data-auto-animate>
+<h3 id="criando-breakpoints2">Criando breakpoints</h3>
+<ul>
+<li>Outra opção é usar o comando <code>rbreak</code> para criar um breakpoint passando uma expressão regular
+<ul>
+<li>Especialmente útil no caso de templates</li>
+
+</ul></li>
+<li data-fragment-index="1" class="fragment"><p>
+Com <code>rbreak doubleInput*</code> o gdb cria um breakpoint em todas as instâncias do template
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="c++" >template &lt;typename T&gt;
+inline T doubleInput(const T&amp; x) {
+    return 2 * x;
+}
+</code></pre>
+</div></li>
+
+<li data-fragment-index="2" class="fragment">Outra opção interessante é <code>rbreak filename.cpp:.*</code> para adicionar um breakpoint em
+todas as funções de um arquivo</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-configuracoes-interessantes" data-state="session-separation-slide">
+<h2 id="configuracoes-interessantes">Configurando o gdb</h2>
+</section>
+<section id="slide-skip-files">
+<h3 id="skip-files">Evitando ver arquivos desinteressantes</h3>
+<ul>
+<li class="fragment">O comando <code>step</code> executa a próxima instrução
+<ul>
+<li>entra em outras funções</li>
+
+</ul></li>
+<li class="fragment">Normalmente só estamos interessados no código do nosso programa</li>
+<li class="fragment">Podemos pedir para o gdb pular arquivos desinteressantes
+<ul>
+<li>Arquivos no namespace std, ou outro de uma biblioteca externa</li>
+
+</ul></li>
+<li class="fragment"><p>
+Para isso usamos o comando <code>skip</code>
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="text" >skip file
+skip function
+</code></pre>
+</div></li>
+<li class="fragment"><p>
+<b>Dica</b>: podemos todas as funções em um namespace com
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="bash" >skip -rfu ^std::
+</code></pre>
+</div></li>
+
+</ul>
+
+</section>
+<section id="slide-gdbinit-global" data-auto-animate>
+<h3 id="gdbinit-global">.gdbinit (global)</h3>
+<ul>
+<li data-fragment-index="1" class="fragment">É possível configurar o gdb usando um arquivo <code>.gdbinit</code> na sua home</li>
+<li data-fragment-index="2" class="fragment"><p>
+Configuração mínima útil
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="text" >set history save on
+set print pretty on
+set pagination off
+set confirm off
+
+skip -rfu ^std::
+skip ...                                                    # Coloque outros que costuma ignorar
+
+set auto-load local-gdbinit on                              # Permite carregar arquivos .gdbinit locais
+add-auto-load-safe-path /some_path/with/local_gdbinit_file/ # Uma pasta contendo um arquivo .gdbinit local
+</code></pre>
+</div></li>
+
+</ul>
+
+
+</section>
+<section id="slide-gdb-global-dica" data-state="dica-slide" data-auto-animate>
+<h3 id="gdb-global-dica">Dica</h3>
+<p>
+<br>
+</p>
+
+<p>
+<code>.gdbinit</code> na sua home também tem efeito quando o gdb é usado com algum front-end
+</p>
+
+</section>
+<section id="slide-gdbinit-local">
+<h3 id="gdbinit-local">.gdbinit (local)</h3>
+<ul>
+<li class="fragment">Também é possível ter um arquivo <code>.gdbinit</code> por projeto
+<ul class="fragment">
+<li>Na verdade por pasta</li>
+
+</ul></li>
+<li class="fragment">Ele é carregado além do <code>.gdbinit</code> global</li>
+<li class="fragment"><p>
+<b>Exemplo</b>: Coloque o conteúdo abaixo em um arquivo <code>.gdbinit</code> na mesma pasta contendo
+seu programa
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="gdb-script" >file seu_executavel
+start
+b main.cpp:11
+run
+</code></pre>
+</div></li>
+
+<li class="fragment"><p>
+Devido a questões de segurança é necessário adicionar a linha abaixo no arquivo <code>.gdbinit</code> na sua home
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="gdb-script" >set auto-load local-gdbinit on
+add-auto-load-safe-path /path_da_pasta_onde_esta_o_outro_gdb_init/
+</code></pre>
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-truques-uteis" data-state="session-separation-slide">
+<h2 id="truques-uteis">Truques úteis</h2>
+</section>
+<section id="slide-breakpoint-commands" data-auto-animate>
+<h3 id="breakpoint-commands">Breakpoint Commands</h3>
+<ul>
+<li class="fragment">São comandos executados ao atingir um breakpoint específico</li>
+<li class="fragment">Qualquer comando do gdb pode ser executado dessa forma
+<ul>
+<li>Até mesmo <code>run</code> para recomeçar a execução do programa</li>
+
+</ul></li>
+
+<li class="fragment"><p>
+Para adicionar comandos use
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="gdb-script" >commands &lt;número do breakpoint&gt;
+&gt; algum comando
+&gt; outro comando
+&gt; end
+</code></pre>
+</div></li>
+
+</ul>
+
+</section>
+<section id="slide-breakpoint-commands-dica" data-state="dica-slide" data-auto-animate>
+<h3 id="breakpoint-commands-dica">Dica</h3>
+<p>
+<br>
+</p>
+
+<p>
+Comandos de breakpoint e um arquivo <code>.gdbinit</code> local podem automatizar toda uma sessão de
+debug
+</p>
+
+</section>
+<section id="slide-breakpoint-commands-example" data-auto-animate>
+<h3 id="breakpoint-commands-example">Exemplo</h3>
+<ul>
+<li>O programa abaixo cria um array de 20 elementos e preenche o mesmo com valores aleatórios
+<ul>
+<li>Na maior parte do tempo ele funciona, mas as vezes ele da crash</li>
+
+</ul></li>
+
+</ul>
+
+
+<div class="org-src-container">
+
+<pre   ><code class="c++" >#include &lt;ctime&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iostream&gt;
+
+double computeInverse(double value) {
+    if (value == 0) throw std::runtime_error("Value cannot be zero");
+    return 1.0 / value;
+}
+
+int main() {
+    srand(time(NULL));
+    constexpr unsigned int arraySize = 20;
+    int array[arraySize];
+
+    for(unsigned int i = 0; i &lt; arraySize; i++) {
+        auto denominator = rand() % 200;
+        array[i]         = computeInverse(denominator);
+    }
+    std::cout &lt;&lt; "Fim" &lt;&lt; std::endl;
+    return 0;
+}
+</code></pre>
+</div>
+
+</section>
+<section id="slide-breakpoint-commands-example2" data-auto-animate>
+<h3 id="breakpoint-commands-example2">Exemplo</h3>
+<ul>
+<li class="fragment"><p>
+Para encontrar o bug, primeiro adicionamos um breakpoint na última instrução do programa
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="gdb-script" >start
+b _exit
+</code></pre>
+</div></li>
+
+<li class="fragment">Verificamos o número do breakpoint com <code>i b</code></li>
+<li class="fragment">Supondo que o número do breakpoint em <code>_exit</code> é 2, use <code>gdb commands 2</code>
+<ul>
+<li>Agora escreva <code>run</code>, pressione <kbd>Enter</kbd>, e escreva <code>end</code> para finalizar</li>
+<li>Rode o programa com o comando <code>run</code></li>
+<li>Caso o programa termine sem atingir o bug ele chegará no breakpoint em
+<code>_exit</code> e será automaticamente reinicializado pelo comando <code>run</code> até que
+eventualmente o bug ocorra</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-display-variables">
+<h3 id="display-variables">Exibindo uma expressão sempre que parar</h3>
+<ul>
+<li class="fragment"><p>
+Para imprimir uma variável ou expressão sempre que parar em um breakpoint use
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="gdb-script" >display expr
+</code></pre>
+</div>
+<p>
+onde <code>expr</code> pode ser alguma expressão ou variável
+</p></li>
+<li class="fragment"><p>
+Para ver o que foi configurado use
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="gdb-script" >info display
+</code></pre>
+</div></li>
+<li class="fragment"><p>
+Para deletar uma expressão ou desabilitá-la use
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="gdb-script" >delete display &lt;NUM&gt;
+disable/enable display &lt;NUM&gt;
+</code></pre>
+</div></li>
+
+</ul>
+
+</section>
+<section id="slide-dynamic-printfs">
+<h3 id="dynamic-printfs">Inserindo printfs sem recompilar</h3>
+<ul>
+<li class="fragment"><p>
+Outro recurso interessante é adicionar printfs sem recompilar
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="bash" >dprintf location, formatting-string, expr1, expr2, ...
+</code></pre>
+</div></li>
+<li class="fragment">Nesse caso o valor será impresso sempre que passar pela linha indicada</li>
+
+</ul>
+
+</section>
+<section id="slide-convenience-variables" data-auto-animate>
+<h3 id="convenience-variables">Variáveis de Conveniência</h3>
+<ul>
+<li class="fragment">GDB permite salvar "variáveis de conveniência"
+<ul>
+<li class="fragment">Essas variáveis existem apenas no GDB e não afetam o programa em execução</li>
+<li class="fragment">Você pode usar para guardar qualquer coisa (valores, ponteiros, expressões, etc)</li>
+
+</ul></li>
+<li class="fragment">Variáveis de conveniência são prefixadas com <code>$</code>
+<ul>
+<li>Qualquer nome precedido de <code>$</code> é válido (exceto se for igual a algum registrador)</li>
+
+</ul></li>
+<li class="fragment"><p>
+Para criar uma variável de conveniência usamos <code>set</code>
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="text" >set $foo = *object_ptr
+</code></pre>
+</div></li>
+<li class="fragment"><p>
+podemos ver seu valor como qualquer outra variável
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="text" >print $foo
+</code></pre>
+</div></li>
+<li class="fragment"><p>
+Para mostrar todas as variáveis de conveniência use
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="text" >show convenience
+</code></pre>
+</div></li>
+
+</ul>
+
+</section>
+<section id="slide-convenience-variables-hint" data-state="dica-slide" data-auto-animate>
+<h3 id="convenience-variables-hint">Dica</h3>
+<p>
+<br>
+</p>
+
+<p>
+Salve o ponteiro de um objeto em uma variável de conveniência. <br>
+Assim poderá acessá-lo de qualquer outro local. <br>
+(desde que o objeto ainda exista)
+</p>
+
+</section>
+<section id="slide-view-arrays" data-auto-animate data-auto-animate-restart>
+<h3 id="view-arrays">Arrays Artificiais</h3>
+<ul>
+<li class="fragment"><p>
+É possível imprimir o conteúdo de um array com
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="gdb-script" >p *array@len
+</code></pre>
+</div></li>
+
+<li class="fragment"><p>
+Funciona até mesmo para múltiplas dimensões (cuidado com a ordem)
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="gdb-script" >p *array2d@num_cols@num_rows
+</code></pre>
+</div></li>
+
+</ul>
+</section>
+<section id="slide-view-arrays-exemplo" data-auto-animate>
+<h3 id="view-arrays-exemplo">Arrays Artificiais</h3>
+<ul>
+<li class="fragment">As variáveis <code>a</code> e <code>m</code> podem ser impressas diretamente</li>
+<li class="fragment">Mas <code>aPtr</code> e <code>mPtr</code> são apenas ponteiros
+<ul>
+<li>Podemos ver todos os elementos usando <code>@</code> e o tamanho</li>
+
+</ul></li>
+
+</ul>
+
+<div class="columns">
+<div class="column w-50">
+<div class="org-src-container">
+<label class="org-src-name">Exemplo</label>
+<pre   ><code class="c++" >int main() {
+    int a[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int* aPtr = a;
+
+    int m[4][3] = {{1, 2, 3}, //
+                   {4, 5, 6}, //
+                   {7, 8, 9}, //
+                   {10, 11, 12}};
+    int* mPtr = &amp;m[0][0];
+
+    return 0;
+}
+</code></pre>
+</div>
+
+</div>
+<div class="column w-50">
+
+<figure id="org21f97ae">
+<img src="./images/print_arrays.png" alt="print_arrays.png" class="fragment">
+
+</figure>
+</div>
+</div>
+
+</section>
+<section id="slide-view-struct-arrays">
+<h3 id="view-struct-arrays">Ver um campo em um array de estruturas</h3>
+<ul>
+<li class="fragment">Considere um array de estruturas onde queremos ver apenas um campo</li>
+<li class="fragment"><p>
+Um truque interessante é usar uma variável de conveniência como contador
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="gdb-script" >set $i = 0
+p mystruct_array[$i++]-&gt;some_field
+</code></pre>
+</div>
+<ul class="fragment">
+<li><kbd>Enter</kbd> no gdb repete o último comando</li>
+<li>Basta pressionar <kbd>Enter</kbd> repetidamente para ver os próximos elementos</li>
+
+</ul></li>
+
+<li class="fragment"><p>
+Também é possível usar a variável de conveniência dentro de um loop
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="gdb-script" >set $i = 0
+while ($i &lt; array_length)
+    p mystruct_array[$i++]-&gt;some_field
+end
+</code></pre>
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-tipos-de-breakpoint" data-state="session-separation-slide">
+<h2 id="tipos-de-breakpoint">Tipos de breakpoints</h2>
+</section>
+<section id="slide-tres-tipos-de-breakpoint">
+<h3 id="tres-tipos-de-breakpoint">Os 3 tipos de breakpoint</h3>
+<ul>
+<li>Há três tipos de "breakpoint" no gdb:
+<dl>
+<dt class="fragment">breakpoints</dt><dd class="fragment">Seu programa para quando um certo ponto é atingido</dd>
+<dt class="fragment">watchpoints (aka, data breakpoint)</dt><dd class="fragment">Seu programa para quando o valor de uma
+expressão muda</dd>
+<dt class="fragment">catchpoints</dt><dd class="fragment">Seu programa para quando um evento especial ocorre
+<ul>
+<li>disparo de uma exceção</li>
+<li>quando uma biblioteca é carregada</li>
+<li>etc</li>
+
+</ul></dd>
+
+</dl></li>
+
+</ul>
+
+
+<p class="fragment box moody">
+Breakpoints podem ter uma condição de parada
+</p>
+
+
+</section>
+<section id="slide-break-in-exceptions">
+<h3 id="break-in-exceptions">Catchpoints</h3>
+<ul>
+<li class="fragment"><p>
+Para parar seu programa quando uma exceção é disparada use
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="gdb-script" >catch throw
+run
+</code></pre>
+</div></li>
+
+<li class="fragment">Nota: vai para em qualquer exceção disparada</li>
+<li class="fragment">Dica: use <code>catch throw</code> como um comando que é rodado quando algum outro
+breakpoint for atingido para capturar apenas exceções disparadas depois dele</li>
+
+</ul>
+
+
+<p>
+<br>
+</p>
+
+<p class="fragment box moody">
+Veja outros eventos de catch na documentação do gdb
+</p>
+
+</section>
+<section id="slide-watchpoints">
+<h3 id="watchpoints">Watchpoints</h3>
+<ul>
+<li data-fragment-index="1" class="fragment"><p>
+Exemplo de uso: pare quando uma variável <code>x</code> for alterada
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="gdb-script" >watch x
+</code></pre>
+</div></li>
+
+<li data-fragment-index="2" class="fragment"><p>
+Também é possível parar sempre que uma variável for lida com
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="gdb-script" >rwatch x
+</code></pre>
+</div></li>
+
+<li data-fragment-index="3" class="fragment"><p>
+Se quiser parar em ambos os casos use
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="gdb-script" >awatch x
+</code></pre>
+</div></li>
+
+</ul>
+
+<p>
+<br>
+</p>
+
+<p class="moody box fragment" data-fragment-index="4">
+Veja mais sobre breakpoints com <code>help breakpoints</code> no gdb
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-python" data-state="session-separation-slide">
+<h2 id="python">Python</h2>
+</section>
+<section id="slide-gdb-com-python" data-auto-animate>
+<h3 id="gdb-com-python">gdb + Python = 💘</h3>
+<ul>
+<li class="fragment">GDB possui um interpretador python integrado</li>
+<li class="fragment">Para rodar um comando em python use <code>python comando</code></li>
+<li class="fragment">Ou inicialize um interpretador python com <code>python-interactive</code> ou apenas <code>pi</code></li>
+<li class="fragment">No python integrado a um módulo <code>gdb</code> que pode ser usado para interagir com o gdb</li>
+<li class="fragment">Exemplo:
+
+<ul>
+<li><p>
+Acessando uma variável no python:
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="gdb-script" >python python_var = gdb.parse_and_eval("some_variable")
+</code></pre>
+</div></li>
+
+</ul></li>
+<li class="fragment">Use <code>python help('gdb')</code> para ver documentação do módulo <code>gdb</code></li>
+
+<li class="fragment"><p>
+Exemplos (rode esses comandos no terminal do gdb)
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="gdb-script" >python bp = gdb.Breakpoint('main.cpp:13')
+python bp.enable=False
+python bps = gdb.breakpoints()
+python var_i = gdb.parse_and_eval('i')
+</code></pre>
+</div></li>
+
+</ul>
+
+</section>
+<section id="slide-gdb-com-python-question" data-auto-animate>
+<h3 id="gdb-com-python-question">Quais os usos úteis dessa integração?</h3>
+
+<figure id="org0afb578">
+<img src="./images/question.jpg" alt="question.jpg" width="55%">
+
+</figure>
+
+
+</section>
+<section id="slide-pretty-printers" data-auto-animate>
+<h3 id="pretty-printers">Pretty Printers</h3>
+<ul>
+<li class="fragment">Podemos criar e registrar pretty printers para nossos tipos de interesse no C++</li>
+<li class="fragment">Ensinamos ao gdb como representar um tipo C++ como string</li>
+<li class="fragment">Suponha que você tenha um tipo chamado <code>mysctruct</code> contendo um campo <code>member</code></li>
+<li class="fragment"><p>
+Podemos criar e registrar um pretty-printer para <code>mystruct</code> como abaixo
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="python" >class MyPrinter(object):       # Classe que sabe converter nosso tipo em uma representação como string
+    def __init__(self, val):   # 'val' é a representação no nosso objeto C++ no Python
+        self.val = val
+    def to_string(self):
+        return (self.val['member'])
+
+import gdb.printing
+pp = gdb.printing.RegexpCollectionPrettyPrinter("my_library")  # Vamos usar para registrar nosso PP
+pp.add_printer("mystruct", "^mystruct$", MyPrinter)            # Registra nosso pretty-printer
+</code></pre>
+</div></li>
+
+<li class="fragment">Basta carregar o arquivo Python com o código acima no gdb com <code>source filename.py</code></li>
+
+</ul>
+
+
+
+
+<p class="fragment moody box">
+Não esqueça de colocar <code>set print pretty on</code> no seu arquivo <code>.gdbinit</code> global
+</p>
+
+</section>
+<section id="slide-pretty-printers2" data-auto-animate>
+<h3 id="pretty-printers2">Pretty Printers</h3>
+<ul>
+<li class="fragment">O GDB já vem com pretty printers para os tipos da STL</li>
+<li class="fragment">Ao imprimir um objeto do tipo <code>std::vector&lt;myscruct&gt;</code> vemos o efeito do pretty-printer para <code>std::vector</code>
+e para o tipo <code>mystruct</code></li>
+<li class="fragment"><p>
+Exemplo: Visualizar uma matriz 6x3 de números complexos (usando a biblioteca <a href="http://arma.sourceforge.net/">armadillo</a>)
+</p>
+
+<div class="columns">
+
+<figure id="org024f2b8">
+<img src="./images/m2_without_pretty_printing.png" alt="m2_without_pretty_printing.png" class="fragment">
+
+</figure>
+
+
+<figure id="org252ae39">
+<img src="./images/m2_with_pretty_printint.png" alt="m2_with_pretty_printint.png" class="fragment">
+
+</figure>
+</div></li>
+
+</ul>
+
+</section>
+<section id="slide-xmethods">
+<h3 id="xmethods">XMethods</h3>
+<ul>
+<li class="fragment">Xmethods são métodos <b>adicionais</b> ou <b>substitutos</b> para métodos de uma classe em C++
+<ul>
+<li class="fragment">Útil para casos quando os métodos definidos no C++ não estejam disponíveis
+(inline, optimized-out, etc)</li>
+<li class="fragment">Podem ser usados mesmo quando debugando a partir de um core file</li>
+
+</ul></li>
+<li class="fragment">Para implementar um xmethod é necessário criar um <code>matcher</code> e um <code>worker</code>
+<ul>
+<li>Mais de um <code>worker</code> pode ser implementado para um mesmo xmethod, cada um
+correspondendo a um overload diferente</li>
+
+</ul></li>
+
+</ul>
+
+<p>
+<br>
+</p>
+
+<p class="moody box fragment">
+Veja mais na documentação do gdb
+</p>
+
+</section>
+<section id="slide-python-interativo" data-auto-animate>
+<h3 id="python-interativo">Python Interativo</h3>
+<ul>
+<li class="fragment">O comando <code>pi</code> (ou <code>python-interactive</code>) roda o python de maneira iterativa
+<ul>
+<li>Especialmente útil para testes e para explorar a API</li>
+
+</ul></li>
+<li class="fragment">Permite explorar o estado de um programa usando Python</li>
+<li class="fragment"><p>
+<b>Exemplo</b>: Gerar pontos uniformemente em um círculo
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="c++" >std::vector&lt;std::complex&lt;double&gt;&gt; calcRandomPointsInsideCircle(unsigned int numPoints, double maxRadius) {
+    std::default_random_engine generator;
+    std::uniform_real_distribution&lt;double&gt; radiusDistribution(0.0, maxRadius);
+    std::uniform_real_distribution&lt;double&gt; angleDistribution(0.0, 2 * M_PI);
+
+    std::vector&lt;std::complex&lt;double&gt;&gt; points;
+    points.reserve(numPoints);
+
+    std::generate_n(std::back_inserter(points), numPoints, [&amp;]() -&gt; std::complex&lt;double&gt; {
+        auto radius = radiusDistribution(generator);
+        auto angle  = angleDistribution(generator);
+        return radius * std::exp(std::complex&lt;double&gt;(0, -angle));
+    });
+
+    return points;
+}
+</code></pre>
+</div></li>
+
+</ul>
+
+<p class="fragment moody box">
+Como checar se os pontos gerados são uniformes durante o plot?
+</p>
+
+
+</section>
+<section id="slide-python-interativo2" data-auto-animate>
+<h3 id="python-interativo2">Python Interativo</h3>
+<p>
+<br>
+</p>
+
+<p>
+Podemos visualizar os pontos gerados durante o debug &#x2026;
+</p>
+
+<p>
+<br>
+</p>
+
+<p class="fragment">
+usando matplotlib
+</p>
+
+
+
+</section>
+<section id="slide-python-interativo3" data-auto-animate>
+<h3 id="python-interativo3">Python Interativo</h3>
+<ul>
+<li>Para isso precisamos converter o vetor do <code>std::vector&lt;std::complex&lt;double&gt;&gt;</code> para um
+array do numpy</li>
+<li data-fragment-index="1" class="fragment"><p>
+Basta carregar o código abaixo no gdb para poder usar durante o python interativo
+</p>
+<div class="org-src-container">
+
+<pre   ><code class="python" >def _cast_to_complex(gdb_value):
+    double_t = gdb.lookup_type('double')
+    # We need to cast gdb_value into an array of two doubles. Then we can
+    # access the real and imaginary parts as the first and second elements
+    real_and_imag_parts = gdb_value.cast(double_t.array(1))
+    return complex(real_and_imag_parts[0], real_and_imag_parts[1])
+
+def get_array_from(v):
+    start_mem = v["_M_impl"]["_M_start"]
+    finish_mem = v["_M_impl"]["_M_finish"]
+    n_elem = finish_mem - start_mem
+    return np.array([_cast_to_complex(start_mem[i]) for i in range(n_elem)])
+</code></pre>
+</div></li>
+
+</ul>
+
+
+</section>
+<section id="slide-ambiente-virtual" data-state="">
+<h3 id="ambiente-virtual">Ambiente virtual para o Python do gdb</h3>
+<ul>
+<li data-fragment-index="1" class="fragment">O gdb usa o python do sistema</li>
+<li data-fragment-index="2" class="fragment">Podemos querer usar alguma biblioteca Python dentro do gdb</li>
+<li data-fragment-index="3" class="fragment">Inicializar o gdb a partir de um ambiente virtual não muda esse fato</li>
+<li data-fragment-index="4" class="fragment">Solução:
+<ul>
+<li data-fragment-index="5" class="fragment strike">Instalar a biblioteca usando <code>sudo pip install</code></li>
+<li data-fragment-index="5" class="fragment">Adicionar as pastas necessárias do path</li>
+<li data-fragment-index="6" class="fragment"><p>
+Rode o comando abaixo no ambiente virtual
+</p>
+
+<div class="org-src-container">
+
+<pre   ><code class="bash" >python -c "import sys; print(sys.path)
+</code></pre>
+</div>
+<p>
+e adicione as pastas no path do Python do gdb via <code>.gdbinit</code>
+</p></li>
+
+</ul></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-thats-all-folks" data-state="the-end-slide">
+<h2 id="thats-all-folks">Perguntas?</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/zoom/zoom.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/plugin/search/search.js"></script>
+
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+plugins: [RevealHighlight, RevealNotes, RevealZoom, RevealSearch],
+margin: 0.0, width: 1777, height: 1000,
+slideNumber: "c/t", transition: 'slide', transitionSpeed: "fast", history: false, hash: true, respondToHashChanges: true
+});
+
+</script>
+</body>
+</html>
